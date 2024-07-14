@@ -1,5 +1,9 @@
 const express= require("express");
 const bodyParser= require("body-parser");
+const { rateLimit }=require('express-rate-limit');
+const helmet = require('helmet');
+
+const logger= require('./logging/logger');
 
 const authRouter= require("./routes/auth");
 const userRouter= require("./routes/user");
@@ -9,7 +13,7 @@ const CONFIG= require("./config/config");
 connectToMongoDb= require("./config/mongodb");
 
  // Signup and login authentication middleware
-require("./authentication/auth")
+require("./authentication/auth");
 
 //Connect to MongoDB
 connectToMongoDb();
@@ -17,6 +21,27 @@ connectToMongoDb();
 const app= express();
 
 // Add middleware
+
+//HTTP Security Middleware
+app.use(helmet());
+
+//Request Rate limit
+const limiter = rateLimit({
+	windowMs: 10 * 60 * 1000, // 10 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 10 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	message: "Uh.. Too many request, try again after some minutes.",
+    handler: (req, res, next, options)=>{
+        next({
+            status: options.statusCode,
+            success: false,
+            message: options.message
+        });
+    }
+});
+app.use(limiter); // Apply the rate limiting middleware to all requests.
+
 // app.use(bodyParser.urlencoded({ extended: false }))// parse application/x-www-form-urlencoded :: Access form value by name.
 app.use(bodyParser.json())// parse application/json
 
@@ -44,7 +69,7 @@ app.get("*", (req, res)=>{
 
 //Error handler middleware
 app.use((err, req, res, next) => {
-    console.log(err);
+    logger.error(err);
     const errorStatus = err.status || 500;
     res.status(errorStatus);
     delete err.status;
@@ -54,5 +79,5 @@ app.use((err, req, res, next) => {
 
 //Start server
 app.listen(CONFIG.PORT, ()=>{
-    console.log(`Server started successfully on port ${CONFIG.PORT}`);
+    logger.info(`Server started successfully on port ${CONFIG.PORT}`);
 }); 
