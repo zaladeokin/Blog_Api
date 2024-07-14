@@ -3,6 +3,7 @@ const bodyParser= require("body-parser");
 
 const authRouter= require("./routes/auth");
 const userRouter= require("./routes/user");
+const blogRouter= require("./routes/blog");
 
 const CONFIG= require("./config/config");
 connectToMongoDb= require("./config/mongodb");
@@ -22,6 +23,7 @@ app.use(bodyParser.json())// parse application/json
 //Add Route
 app.use("/api/v1/auth", authRouter);//Authentication routes
 app.use("/api/v1/users", userRouter);//User routes
+app.use("/api/v1/blogs", blogRouter);//Blog routes
 
 app.get("/", (req, res)=>{
     res.json({

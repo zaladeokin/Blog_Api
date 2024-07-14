@@ -66,3 +66,13 @@ authRouter.post(
 //authRouter.post('change_password')// change password process
 
 module.exports = authRouter;
+
+// try{//Model might throw error 
+        
+//     }catch(err){
+//         next({
+//             status: 400,
+//             success: false,
+//             message: err
+//         });
+//     }
