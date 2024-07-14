@@ -13,7 +13,7 @@
 
 ## Introduction
 
-The Blog API is a RESTful service built with Express.js, designed to manage blog posts. It supports creating, reading, updating, and deleting blog posts, and provides endpoints for user should be able to sign up and sign in into the blog app. Use [Blog_Api endpoints](https://blog-api-ui1e.onrender.com/) to test endpoints on live server.
+The Blog API is a RESTful service built with Express.js, designed to manage blog posts. It supports creating, reading, updating, and deleting blog posts, and provides endpoints for user to sign up and sign in into the blog app. Use [Blog_Api endpoints](https://blog-api-ui1e.onrender.com/) to test endpoints on live server.
 
 
 ## Features
@@ -21,11 +21,11 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
 - **RESTful**: RESTful API endpoints for CRUD operations on blogs and users.
 - **User authentication**: Use JWT as authentication strategy and expire the token after 1 hour.
 - **Pagination**: Endpoints that return list of data are paginated.
-- **Blog state**: Blogs can be in two states(draft and published) and filterable by state.
+- **Blog state**: Blogs can be in two states(draft and published) and filterable by it.
 - **Search**: Blogs are searchable by author, title and tags. Users are searchable by name.
 - **Validation and error handling**: Middleware for request validation and proper error handling.
 - **Security**: HTTP is secure against Cross-Site Scripting (XSS), brute force and other malicious attacks.
-- **Logging**: Request to endpoints, error and information are log and store in a log file.
+- **Logging**: Request to endpoints, error and information are logged and store in a log file.
 - **Additional features**: The number of time a blog is read is recorded. Also, there's an algorithm that estimate the expected read time for a blog.
 
 
@@ -89,7 +89,7 @@ The API set an appropiate status code and returns a JSON for different scenarios
 
 - **success**: The value is set to **false** when an error occurred, otherwise **true**.
 - **message** contains information about the error.
-- *Note* On successful request, additional properties may be added depending on the endpoint been called.
+- *Note*: On successful request, additional properties may be added depending on the endpoint been called.
 
 
 ## Dependencies
