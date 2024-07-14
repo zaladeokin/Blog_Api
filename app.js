@@ -2,8 +2,9 @@ const express= require("express");
 const bodyParser= require("body-parser");
 const { rateLimit }=require('express-rate-limit');
 const helmet = require('helmet');
+const httpLogger= require('./logging/httpLogger')
 
-const logger= require('./logging/logger');
+const logger= require('./logging/logger');//Log info and error
 
 const authRouter= require("./routes/auth");
 const userRouter= require("./routes/user");
@@ -21,6 +22,9 @@ connectToMongoDb();
 const app= express();
 
 // Add middleware
+
+//Log http request.
+app.use(httpLogger);
 
 //HTTP Security Middleware
 app.use(helmet());
