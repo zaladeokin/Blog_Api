@@ -31,6 +31,10 @@ async function getAllPublishedBlogs(req, res, next) {
 }
 
 async function getPublishedBlogById(req, res, next) {
+    /**
+     * Get publihed blog by Id
+     * Update read_count by 1
+     */
     const blogId= req.params.id;
 
    try{//Model might throw error
@@ -42,6 +46,9 @@ async function getPublishedBlogById(req, res, next) {
                 message: "Blog does not exist."
             });
         }
+
+        //Increase read_count by 1
+        await BlogModel.findByIdAndUpdate(blogId, { $set: { read_count : blog.read_count + 1 }});
 
         res.json({
             success: true,
@@ -284,6 +291,9 @@ async function addBlog(req, res, next) {
             return;
         }
 
+        //Estimate read time in unit of seconds
+        blog.reading_time= generateReadTime(blog.body);
+
         const result = await BlogModel.create(blog);
         res.status(201);
         res.json({
@@ -305,7 +315,9 @@ async function editBlog(req, res, next) {
      * When Blog is edited, State can be changed alongside with other parameter by the author
      * author, timestamp, reading_time and read_count can not be changed
      * Therefore, No need to validate the above properties(author, timestamp, reading_time and read_count) in blog_validator.js. However, Same validator is used to create and dit blog
+     * read_time will be calculated again based on the number of words in blog.body
      */
+
     let blogId= req.params.id;
     let userId= req.user._id;
     const editedBlog= req.body;
@@ -314,9 +326,12 @@ async function editBlog(req, res, next) {
     let authorized= await validateBlogIdAndUser(blogId, userId, res, next);
     if(!authorized) return;
 
+    //Estimate read time in unit of seconds
+    editedBlog.reading_time= generateReadTime(editedBlog.body);
+
     try{//Model might throw error
         //Update Infoo
-        await BlogModel.findByIdAndUpdate(blogId, { $set: { title: editedBlog.title, description: editedBlog.description, state: editedBlog.state, tags: editedBlog.tags, body: editedBlog.body }});
+        await BlogModel.findByIdAndUpdate(blogId, { $set: { title: editedBlog.title, description: editedBlog.description, state: editedBlog.state, tags: editedBlog.tags, body: editedBlog.body, reading_time:  editedBlog.reading_time }});
 
         res.json({
             success: true,
@@ -396,7 +411,9 @@ async function deleteBlogById(req, res, next){
  * 
  * validateBlogIdAndUser() :: Check if blog ID is valid and ensures user can only edit their own blog
  * 
- * blogPagination :: Calculate pagination parameters
+ * blogPagination() :: Calculate pagination parameters
+ * 
+ * generateReadTime() :: Estimate the reading time for a blog
  */
 
 async function validateBlogIdAndUser(blogId, userId, res, next) {
@@ -448,6 +465,14 @@ async function blogPagination(req, filter= undefined, next) {
             message: err
         });
     }
+}
+
+function generateReadTime(body){
+    //Remove excess white-space from content and return the number of words in the content
+    const no_of_words= body.replace(/\s+/g,' ').trim().split(" ").length;
+    //Assumes it takes 0.5 seconds to read a word
+    const reading_time= no_of_words * 0.5
+    return reading_time;
 }
 
 
