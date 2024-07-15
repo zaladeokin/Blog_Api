@@ -6,7 +6,11 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Endpoints](#endpoints)
-  - 
+  - [Login User](#login-user)
+  - [Signup a new User](#signup-a-new-user)
+  - [Update User data](#update-user-data)
+  - [Get All Users](#get-all=users)
+  - [Get a User](#get-a-user)
 - [Error Handling](#error-handling)
 - [Dependencies](#dependencies)
 - [Contact](#contact)
@@ -75,6 +79,117 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 
 ## Endpoints
 
+### Login User
+
+- **URL:** `/api/v1/auth/login`
+- **Method:** `POST`
+- **Description:** Login a user and generate a token for authentication. The token must be passed as a Bearer token in the Authourization Header of request to access protected endpoints.
+- **Request Body:**
+```json
+    {
+        "email": "user@email.com",
+        "password": "password"
+    }
+```
+- **Response:**
+```json
+    {
+        "success": true,
+        "message": "Logged in Successfully.",
+        "token": "token"
+    }
+```
+
+### Signup a new User
+
+- **URL:** `/api/v1/users`
+- **Method:** `POST`
+- **Description:** Register a new user. Email must be unique(i.e not used by a existing user) and **password** and **repeat_password** must match for registration to be successful.
+- **Request Body:**
+```json
+    {
+        "email" : "user@email.com",
+        "first_name" : "Firstname",
+        "last_name": "Lastname",
+        "password": "password",
+        "repeat_password": "password"
+    }
+```
+- **Response:**
+```json
+    {
+        "success": true,
+        "message": "User created successfully"
+    }
+```
+
+### Update User data
+
+- **URL:** `/api/v1/users/:id`
+- **Method:** `PUT`
+- **Authorization**: Bearer Token
+- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter. Note, Password cann be updated via this endpoint but must be provided for additional authentication (2FA).
+- **Request Body:**
+    ```json
+    {
+        "email" : "user1@email.com",
+        "first_name" : "Firstnames",
+        "last_name": "Lastnames",
+        "password": "password"
+    }
+    ```
+- **Response:**
+```json
+    {
+        "success": true,
+        "message": "User information updated"
+    }
+```
+
+### Get All Users
+
+- **URL:** `/api/v1/users`
+- **Method:** `GET`
+- **Query**:
+    - **page**(optional) : The current page, default is 1.
+    - **lmit**(optional) : Number of users to return per page, default is 20.
+    - **keyword**(optional) :  string to filter list users.
+- **Description:** Retrieves a list of all users.
+- **Response:**
+```json
+    {
+    "success": true,
+    "users": [
+        {
+            "_id": "userId",
+            "first_name": "Joyce",
+            "last_name": "Richardo"
+        },
+       ...
+    ],
+    "limit": 20,
+    "current_page": 1,
+    "total_pages": 1
+}
+```
+
+### Get a User
+
+- **URL:** `/api/v1/users/:id`
+- **Method:** `GET`
+- **Description:** Retrieves a user information by Id.
+- **Response:**
+```json
+    {
+        "success": true,
+    "   user": {
+            "_id": "userId",
+            "email" : "user1@email.com",
+            "first_name": "Joyce",
+            "last_name": "Richardo"
+        }
+    }
+```
 
 
 ## Error Handling
