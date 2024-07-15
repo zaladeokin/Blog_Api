@@ -130,14 +130,14 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Authorization**: Bearer Token
 - **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter. Note, Password cann be updated via this endpoint but must be provided for additional authentication (2FA).
 - **Request Body:**
-    ```json
+```json
     {
         "email" : "user1@email.com",
         "first_name" : "Firstnames",
         "last_name": "Lastnames",
         "password": "password"
     }
-    ```
+```
 - **Response:**
 ```json
     {
