@@ -153,7 +153,7 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Query**:
     - **page**(optional) : The current page, default is 1.
     - **lmit**(optional) : Number of users to return per page, default is 20.
-    - **keyword**(optional) :  string to filter list users.
+    - **keyword**(optional) :  string to filter list of users.
 - **Description:** Retrieves a list of all users.
 - **Response:**
 ```json
@@ -182,7 +182,7 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 ```json
     {
         "success": true,
-    "   user": {
+        "user": {
             "_id": "userId",
             "email" : "user1@email.com",
             "first_name": "Joyce",
