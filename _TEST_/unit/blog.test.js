@@ -193,4 +193,38 @@ describe("Get published blog by Id", ()=>{
     });
 });
 
+describe("Get an author blogs", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    let req={
+        query: {},
+        user: { _id: "666f1ff79181431b43edc052" }
+    }
+    BlogModel.countDocuments.mockImplementation(()=> blogsData.filter((blog)=> blog.author._id === req.user._id).length);
 
+    test("Return blogs either in published or draft state", async ()=>{
+        BlogModel.find.mockImplementationOnce(()=> ({ sort: jest.fn(()=>  blogsData.filter((blog)=> blog.author._id === req.user._id)) }));
+        await getAuthorBlogs(req, res, next);
+        let blogs= blogsData.filter((blog)=> blog.author._id === req.user._id);
+        expect(res.json).toHaveBeenCalledWith({
+            success: true, 
+            blogs: blogs,
+            limit: 20,
+            current_page: 1,
+            total_pages: 1
+        });
+    });
+
+    test("Error handling", async ()=>{
+        BlogModel.find.mockImplementationOnce(()=> {
+             throw "An error occurred"
+        });
+        await getAuthorBlogs(req, res, next);
+        expect(next).toHaveBeenCalledWith({
+            status: 400,
+            success: false,
+            message: "An error occurred"
+        });
+    });
+});

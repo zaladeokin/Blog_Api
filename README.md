@@ -13,13 +13,14 @@
   - [Get a User](#get-a-user)
   - [Get All Published Blogs](#get-all-published-blogs)
   - [Get Published Blog by Id](#get-published-blog-by-id)
+  - [Get an Author Blogs](#get-an-author-blogs)
 - [Error Handling](#error-handling)
 - [Dependencies](#dependencies)
 - [Contact](#contact)
 
 ## Introduction
 
-The Blog API is a RESTful service built with Express.js, designed to manage blog posts. It supports creating, reading, updating, and deleting blog posts, and provides endpoints for user to sign up and sign in into the blog app. Use [Blog_Api endpoints](https://blog-api-ui1e.onrender.com/) to test endpoints on live server.
+The Blog API is a RESTful service built with Express.js, designed to manage blog posts. It supports creating, reading, updating, and deleting blog posts, and provides endpoints for user to sign up and sign in into the blog app. copy this link [https://blog-api-ui1e.onrender.com/](https://blog-api-ui1e.onrender.com/) to test endpoints on live server.
 
 
 ## Features
@@ -136,7 +137,7 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Method:** `PUT`
 - **Authorization**: Bearer Token
 - **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter.  
-    -*Note*: Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
+    - *Note*: Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
 - **Request Body:**
 ```json
     {
@@ -166,19 +167,19 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Response:**
 ```json
     {
-    "success": true,
-    "users": [
-        {
-            "_id": "userId",
-            "first_name": "Joyce",
-            "last_name": "Richardo"
-        },
-       ...
-    ],
-    "limit": 20,
-    "current_page": 1,
-    "total_pages": 1
-}
+        "success": true,
+        "users": [
+            {
+                "_id": "userId",
+                "first_name": "Joyce",
+                "last_name": "Richardo"
+            },
+            ...
+        ],
+        "limit": 20,
+        "current_page": 1,
+        "total_pages": 1
+    }
 ```
 
 ### Get a User
@@ -206,36 +207,36 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Query Parameters**:
     - **page**(optional) : The current page, default is 1.
     - **limit**(optional) : Number of users to return per page, default is 20.
-- **Description:** Retrieves the list of blogs with author's information. Blogs are order by (highest) read_count, (lowest) reading_time and (latest) timestamp
+- **Description:** Retrieves the list of blogs with author's information. Blogs are order by (highest) read_count, (lowest) reading_time and (latest) timestamp.
 - **Response:**
 ```json
     {
-    "success": true,
-    "blogs": [
-        {
-            "_id": "6693a800c2acbb05a1a63797",
-            "title": "Grace at UK.",
-            "description": "My trip to UK.",
-            "author": {
-                "_id": "666f1ff79181431b43edc052",
-                "first_name": "Grace",
-                "last_name": "Favor"
+        "success": true,
+        "blogs": [
+            {
+                "_id": "6693a800c2acbb05a1a63797",
+                "title": "Grace at UK.",
+                "description": "My trip to UK.",
+                "author": {
+                    "_id": "666f1ff79181431b43edc052",
+                    "first_name": "Grace",
+                    "last_name": "Favor"
+                },
+                "read_count": 4,
+                "reading_time": 10.5,
+                "tags": [
+                    "Test",
+                    "blog",
+                    "UK"
+                ],
+                "timestamp": "2024-07-14T10:27:12.286Z"
             },
-            "read_count": 4,
-            "reading_time": 10.5,
-            "tags": [
-                "Test",
-                "blog",
-                "UK"
-            ],
-            "timestamp": "2024-07-14T10:27:12.286Z"
-        },
-        ...
-    ],
-    "limit": 20,
-    "current_page": 2,
-    "total_pages": 5
-}
+            ...
+        ],
+        "limit": 20,
+        "current_page": 2,
+        "total_pages": 5
+    }
 ```
 
 ### Get Published Blog by Id
@@ -270,6 +271,43 @@ Once the server is running, you can use a tool like Postman or curl to interact 
             ],
             "timestamp": "2024-06-29T19:08:03.776Z"
         }
+    }
+```
+
+### Get an Author Blogs
+
+- **URL:** `/api/v1/blogs/myblogs`
+- **Method:** `GET`
+- **Authorization**: Bearer Token
+- **Query Parameters**:
+    - **page**(optional) : The current page, default is 1.
+    - **limit**(optional) : Number of users to return per page, default is 20.
+    - **state**(optional) : Value can either be *draft* or *published*. if **state** is not set, blogs in both draft and published state will be return.
+- **Description:** Retrieves the list of blogs created by an author whether it is in publish or draft state. Blogs are order by (latest) timestamp, (highest) read_count, (lowest) and reading_time.
+- **Response:**
+```json
+    {
+        "success": true,
+        "blogs": [
+            {
+                "_id": "6693a800c2acbb05a1a63797",
+                "title": "Grace at UK.",
+                "description": "My trip to UK.",
+                "state": "draft",
+                "read_count": 4,
+                "reading_time": 10.5,
+                "tags": [
+                    "Test",
+                    "blog",
+                    "UK"
+                ],
+                "timestamp": "2024-07-14T10:27:12.286Z"
+            },
+            ...
+        ],
+        "limit": 20,
+        "current_page": 1,
+        "total_pages": 2
     }
 ```
 
