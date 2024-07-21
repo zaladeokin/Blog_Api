@@ -77,6 +77,7 @@ app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
     res.status(errorStatus);
     delete err.status;
+    delete err.level;
     res.json(err)
     next();
 });
