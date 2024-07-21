@@ -115,7 +115,6 @@ describe("Get user by Id",()=>{
             params: { id: "666f20975a0749eb704efce4" }
         }
         await getUserById(req, res, next);
-        expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
             success: true,
             user: {

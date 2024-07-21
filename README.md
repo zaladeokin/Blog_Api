@@ -9,8 +9,10 @@
   - [Login User](#login-user)
   - [Signup a new User](#signup-a-new-user)
   - [Update User data](#update-user-data)
-  - [Get All Users](#get-all=users)
+  - [Get All Users](#get-all-users)
   - [Get a User](#get-a-user)
+  - [Get All Published Blogs](#get-all-published-blogs)
+  - [Get Published Blog by Id](#get-published-blog-by-id)
 - [Error Handling](#error-handling)
 - [Dependencies](#dependencies)
 - [Contact](#contact)
@@ -133,7 +135,8 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **URL:** `/api/v1/users/:id`
 - **Method:** `PUT`
 - **Authorization**: Bearer Token
-- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter. Note, Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
+- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter.  
+    -*Note*: Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
 - **Request Body:**
 ```json
     {
@@ -235,6 +238,41 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 }
 ```
 
+### Get Published Blog by Id
+
+- **URL:** `/api/v1/blogs/:id`
+- **Method:** `GET`
+- **Description:** Retrieves a blog by Id with author's information. 
+    - *Note*:
+        - reading_time is recorded in unit of seconds.
+        - For every request make to this endpoint, read_count is increased by 1 and update reflects on the next request.
+- **Response:**
+```json
+    {
+        "success": true,
+        "blog": {
+            "_id": "66805b931fc1c063514d1d18",
+            "title": "Building your portfolio.",
+            "description": "web development masterclass",
+            "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
+            "author": {
+                "_id": "666f20975a0749eb704efce4",
+                "first_name": "Zacchaeus",
+                "last_name": "Aladeokin",
+                "email": "zaladeokin@gmail.com"
+            },
+            "read_count": 26,
+            "reading_time": 300,
+            "tags": [
+                "software",
+                "blog",
+                "portfolio"
+            ],
+            "timestamp": "2024-06-29T19:08:03.776Z"
+        }
+    }
+```
+
 
 ## Error Handling
 Errors are returned in the following format:
@@ -248,7 +286,7 @@ The API set an appropiate status code and returns a JSON for different scenarios
 
 - **success**: The value is set to **false** when an error occurred, otherwise **true**.
 - **message** contains information about the error.
-- *Note*: On successful request, additional properties may be added depending on the endpoint been called.
+    - *Note*: On successful request, additional properties may be added depending on the endpoint been called.
 
 
 ## Dependencies

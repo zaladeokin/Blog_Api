@@ -38,10 +38,11 @@ async function getPublishedBlogById(req, res, next) {
     const blogId= req.params.id;
 
    try{//Model might throw error
-        const blog= await BlogModel.findOne({_id: blogId, state: "published"}, '-__v').populate("author", "first_name last_name email");
+        const blog= await BlogModel.findOne({_id: blogId, state: "published"}, '-__v -state').populate("author", "first_name last_name email");
 
         if(!blog){
-            return res.status(400).json({
+            res.status(400)
+            return res.json({
                 success: false,
                 message: "Blog does not exist."
             });

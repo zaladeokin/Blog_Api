@@ -120,7 +120,7 @@ describe("Get published blogs", ()=>{
             total_pages: 2,
         });
     });
-     test("Error handling", async ()=>{
+    test("Error handling", async ()=>{
         BlogModel.find.mockImplementationOnce(()=> {
              throw "An error occurred"
         });
@@ -133,6 +133,64 @@ describe("Get published blogs", ()=>{
             success: false,
             message: "An error occurred"
         });
-     });
+    });
 });
+
+describe("Get published blog by Id", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    BlogModel.findByIdAndUpdate.mockImplementation();
+    test("Can't access blog in draft state/ handle invalid blog Id", async ()=>{
+        let req={
+            params: { id: "wrong_id" }
+        }
+        BlogModel.findOne.mockImplementationOnce(()=> ({
+            populate: jest.fn(()=> {
+                let result= blogsData.filter((blog)=> blog.state === "published" && blog._id ===req.params.id);
+                result= result.length === 0 ? undefined : result[0];
+                return result;
+            })
+        }));
+        await getPublishedBlogById(req, res, next);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Blog does not exist."
+        });
+    });
+    test("Return published blog with valid Id", async ()=>{
+        let req={
+            params: { id: "6693a800c2acbb05a1a63797" }
+        }
+        BlogModel.findOne.mockImplementationOnce(()=> ({
+            populate: jest.fn(()=> {
+                let result= blogsData.filter((blog)=> blog.state === "published" && blog._id ===req.params.id);
+                result= result.length === 0 ? undefined : result[0];
+                return result;
+            })
+        }));
+        await getPublishedBlogById(req, res, next);
+        let blog= blogsData.filter((blog)=> blog.state === "published" && blog._id ===req.params.id)[0]
+        expect(res.json).toHaveBeenCalledWith({
+            success: true,
+            blog: blog
+        });
+    });
+    test("Error handling", async ()=>{
+        BlogModel.findOne.mockImplementationOnce(()=> {
+             throw "An error occurred"
+        });
+        let req= {
+            params: {id: ""}
+        }
+        await getPublishedBlogById(req, res, next);
+        expect(next).toHaveBeenCalledWith({
+            status: 400,
+            success: false,
+            message: "An error occurred"
+        });
+    });
+});
+
 
