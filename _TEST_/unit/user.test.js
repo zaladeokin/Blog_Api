@@ -20,24 +20,24 @@ const idLookUp= (id)=>{
 //users stub
 //userData.length= 3
 const usersData=  [
-        {
-            "_id": "669578e29938bd2800dc1c1e",
-            "first_name": "Joyce",
-            "last_name": "Richardo",
-            "email": "joyce1@gmail.com"
-        },
-        {
-            "_id": "666f1ff79181431b43edc052",
-            "first_name": "ZHK",
-            "last_name": "Alaf",
-            "email": "zaladeokin@gmail.com"
-        },
-        {
-            "_id": "666f20975a0749eb704efce4",
-            "first_name": "Zacchaeus",
-            "last_name": "Aladeokin",
-            "email": "zaladeokin333@gmail.com"
-        }
+    {
+        "_id": "669578e29938bd2800dc1c1e",
+        "first_name": "Joyce",
+        "last_name": "Richardo",
+        "email": "joyce1@gmail.com"
+    },
+    {
+        "_id": "666f1ff79181431b43edc052",
+        "first_name": "Grace",
+        "last_name": "Favor",
+        "email": "favour56@gmail.com"
+    },
+    {
+        "_id": "666f20975a0749eb704efce4",
+        "first_name": "Zacchaeus",
+        "last_name": "Aladeokin",
+        "email": "zaladeokin@gmail.com"
+    }
 ]
 
 
@@ -122,7 +122,7 @@ describe("Get user by Id",()=>{
                 "_id": "666f20975a0749eb704efce4",
                 "first_name": "Zacchaeus",
                 "last_name": "Aladeokin",
-                "email": "zaladeokin333@gmail.com"
+                "email": "zaladeokin@gmail.com"
             }
         })
     });

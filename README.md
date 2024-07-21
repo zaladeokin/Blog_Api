@@ -159,7 +159,7 @@ Once the server is running, you can use a tool like Postman or curl to interact 
     - **page**(optional) : The current page, default is 1.
     - **limit**(optional) : Number of users to return per page, default is 20.
     - **keyword**(optional) :  string to filter list of users.
-- **Description:** Retrieves the list of all users.
+- **Description:** Retrieves the list of users.
 - **Response:**
 ```json
     {
@@ -189,11 +189,50 @@ Once the server is running, you can use a tool like Postman or curl to interact 
         "success": true,
         "user": {
             "_id": "userId",
-            "email" : "user1@email.com",
+            "email" : "joyce1@email.com",
             "first_name": "Joyce",
             "last_name": "Richardo"
         }
     }
+```
+
+### Get All Published Blogs
+
+- **URL:** `/api/v1/blogs`
+- **Method:** `GET`
+- **Query Parameters**:
+    - **page**(optional) : The current page, default is 1.
+    - **limit**(optional) : Number of users to return per page, default is 20.
+- **Description:** Retrieves the list of blogs with author's information. Blogs are order by (highest) read_count, (lowest) reading_time and (latest) timestamp
+- **Response:**
+```json
+    {
+    "success": true,
+    "blogs": [
+        {
+            "_id": "6693a800c2acbb05a1a63797",
+            "title": "Grace at UK.",
+            "description": "My trip to UK.",
+            "author": {
+                "_id": "666f1ff79181431b43edc052",
+                "first_name": "Grace",
+                "last_name": "Favor"
+            },
+            "read_count": 4,
+            "reading_time": 10.5,
+            "tags": [
+                "Test",
+                "blog",
+                "UK"
+            ],
+            "timestamp": "2024-07-14T10:27:12.286Z"
+        },
+        ...
+    ],
+    "limit": 20,
+    "current_page": 2,
+    "total_pages": 5
+}
 ```
 
 
