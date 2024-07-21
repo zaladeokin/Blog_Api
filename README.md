@@ -1,6 +1,7 @@
 # Blog API
 
 ## Table of Contents
+
 - [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
@@ -14,6 +15,7 @@
   - [Get All Published Blogs](#get-all-published-blogs)
   - [Get Published Blog by Id](#get-published-blog-by-id)
   - [Get an Author Blogs](#get-an-author-blogs)
+  - [Get Author Blog by Id](#get-uthor-blog-by-id)
 - [Error Handling](#error-handling)
 - [Dependencies](#dependencies)
 - [Contact](#contact)
@@ -22,68 +24,68 @@
 
 The Blog API is a RESTful service built with Express.js, designed to manage blog posts. It supports creating, reading, updating, and deleting blog posts, and provides endpoints for user to sign up and sign in into the blog app. copy this link [https://blog-api-ui1e.onrender.com/](https://blog-api-ui1e.onrender.com/) to test endpoints on live server.
 
-
 ## Features
 
 - **RESTful**: RESTful API endpoints for CRUD operations on blogs and users.
 - **User authentication**: Use JWT as authentication strategy and expire the token after 1 hour.
 - **Pagination**: Endpoints that return list of data are paginated.
-- **Blog state**: Blogs can be in two states(draft and published) and filterable by it.
+- **Blog state**: Blogs can be in two states(draft or published) and filterable by it.
 - **Search**: Blogs are searchable by author, title and tags. Users are searchable by name.
 - **Validation and error handling**: Middleware for request validation and proper error handling.
 - **Security**: HTTP is secure against Cross-Site Scripting (XSS), brute force, and other malicious attacks.
 - **Logging**: Request to endpoints, error, and information are logged and store in a log file.
 - **Additional features**: The number of times a blog is read are recorded. Also, there's an algorithm that estimate the expected read time for a blog.
 
-
 ## Technologies Used
 
 - MongoDB (atlas)
 - Express.js
 - Node.js
-- HTML
-
 
 ## Installation
 
 1. Clone the repository:
+
 ```sh
     git clone https://github.com/zaladeokin/Blog_Api.git
 ```
 
 2. Navigate to the project directory:
+
 ```sh
     cd Blog_Api
 ```
 
 3. Install dependencies:
+
 ```sh
     npm install
 ```
 
 4. Create a .env file in the root directory and add the following environment variables
-    - EMAIL=zaladeokin@gmail.com
-    - PHONE_NUMBER=+2348135994222
-    - LINKEDIN=https://www.linkedin.com/in/zacchaeus-aladeokin-7b334a22a/
-    - PORT=4000
-    - CONN_URL=your_database_CONN_URL
-    - JWT_SECRET=any_string_combinations
+
+   - EMAIL=zaladeokin@gmail.com
+   - PHONE_NUMBER=+2348135994222
+   - LINKEDIN=https://www.linkedin.com/in/zacchaeus-aladeokin-7b334a22a/
+   - PORT=4000
+   - CONN_URL=your_database_CONN_URL
+   - JWT_SECRET=any_string_combinations
 
 5. Start the server:
+
 ```sh
     node app.js
 ```
 
 6. Test:
+
 ```sh
     npm test
 ```
 
-
 ## Usage
 
 Once the server is running, you can use a tool like Postman or curl to interact with the API endpoints.
-
 
 ## Endpoints
 
@@ -93,19 +95,22 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Method:** `POST`
 - **Description:** Login a user and generate a token for authentication. The token must be passed as a Bearer token in the Authourization Header of request to access protected endpoints.
 - **Request Body:**
+
 ```json
-    {
-        "email": "user@email.com",
-        "password": "password"
-    }
+{
+  "email": "user@email.com",
+  "password": "password"
+}
 ```
+
 - **Response:**
+
 ```json
-    {
-        "success": true,
-        "message": "Logged in Successfully.",
-        "token": "token"
-    }
+{
+  "success": true,
+  "message": "Logged in Successfully.",
+  "token": "token"
+}
 ```
 
 ### Signup a new User
@@ -114,21 +119,24 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Method:** `POST`
 - **Description:** Register a new user. Email must be unique(i.e not used by a existing user) and **password** and **repeat_password** must match for registration to be successful.
 - **Request Body:**
+
 ```json
-    {
-        "email" : "user@email.com",
-        "first_name" : "Firstname",
-        "last_name": "Lastname",
-        "password": "password",
-        "repeat_password": "password"
-    }
+{
+  "email": "user@email.com",
+  "first_name": "Firstname",
+  "last_name": "Lastname",
+  "password": "password",
+  "repeat_password": "password"
+}
 ```
+
 - **Response:**
+
 ```json
-    {
-        "success": true,
-        "message": "User created successfully"
-    }
+{
+  "success": true,
+  "message": "User created successfully"
+}
 ```
 
 ### Update User data
@@ -136,23 +144,26 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **URL:** `/api/v1/users/:id`
 - **Method:** `PUT`
 - **Authorization**: Bearer Token
-- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter.  
-    - *Note*: Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
+- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter.
+  - _Note_: Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
 - **Request Body:**
+
 ```json
-    {
-        "email" : "user1@email.com",
-        "first_name" : "Firstnames",
-        "last_name": "Lastnames",
-        "password": "password"
-    }
+{
+  "email": "user1@email.com",
+  "first_name": "Firstnames",
+  "last_name": "Lastnames",
+  "password": "password"
+}
 ```
+
 - **Response:**
+
 ```json
-    {
-        "success": true,
-        "message": "User information updated"
-    }
+{
+  "success": true,
+  "message": "User information updated"
+}
 ```
 
 ### Get All Users
@@ -160,11 +171,12 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **URL:** `/api/v1/users`
 - **Method:** `GET`
 - **Query Parameters**:
-    - **page**(optional) : The current page, default is 1.
-    - **limit**(optional) : Number of users to return per page, default is 20.
-    - **keyword**(optional) :  string to filter list of users.
+  - **page**(optional) : The current page, default to 1.
+  - **limit**(optional) : Number of users to return per page, default to 20.
+  - **keyword**(optional) : string to filter list of users.
 - **Description:** Retrieves the list of users.
 - **Response:**
+
 ```json
     {
         "success": true,
@@ -188,16 +200,17 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Method:** `GET`
 - **Description:** Retrieves a user information by Id.
 - **Response:**
+
 ```json
-    {
-        "success": true,
-        "user": {
-            "_id": "userId",
-            "email" : "joyce1@email.com",
-            "first_name": "Joyce",
-            "last_name": "Richardo"
-        }
-    }
+{
+  "success": true,
+  "user": {
+    "_id": "userId",
+    "email": "joyce1@email.com",
+    "first_name": "Joyce",
+    "last_name": "Richardo"
+  }
+}
 ```
 
 ### Get All Published Blogs
@@ -205,10 +218,11 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **URL:** `/api/v1/blogs`
 - **Method:** `GET`
 - **Query Parameters**:
-    - **page**(optional) : The current page, default is 1.
-    - **limit**(optional) : Number of users to return per page, default is 20.
+  - **page**(optional) : The current page, default to 1.
+  - **limit**(optional) : Number of users to return per page, default to 20.
 - **Description:** Retrieves the list of blogs with author's information. Blogs are order by (highest) read_count, (lowest) reading_time and (latest) timestamp.
 - **Response:**
+
 ```json
     {
         "success": true,
@@ -243,35 +257,32 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 
 - **URL:** `/api/v1/blogs/:id`
 - **Method:** `GET`
-- **Description:** Retrieves a blog by Id with author's information. 
-    - *Note*:
-        - reading_time is recorded in unit of seconds.
-        - For every request make to this endpoint, read_count is increased by 1 and update reflects on the next request.
+- **Description:** Retrieves a blog by Id with author's information.
+  - _Note_:
+    - reading_time is recorded in unit of seconds.
+    - For every request make to this endpoint, read_count is increased by 1 and update reflects on the next request.
 - **Response:**
+
 ```json
-    {
-        "success": true,
-        "blog": {
-            "_id": "66805b931fc1c063514d1d18",
-            "title": "Building your portfolio.",
-            "description": "web development masterclass",
-            "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
-            "author": {
-                "_id": "666f20975a0749eb704efce4",
-                "first_name": "Zacchaeus",
-                "last_name": "Aladeokin",
-                "email": "zaladeokin@gmail.com"
-            },
-            "read_count": 26,
-            "reading_time": 300,
-            "tags": [
-                "software",
-                "blog",
-                "portfolio"
-            ],
-            "timestamp": "2024-06-29T19:08:03.776Z"
-        }
-    }
+{
+  "success": true,
+  "blog": {
+    "_id": "66805b931fc1c063514d1d18",
+    "title": "Building your portfolio.",
+    "description": "web development masterclass",
+    "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
+    "author": {
+      "_id": "666f20975a0749eb704efce4",
+      "first_name": "Zacchaeus",
+      "last_name": "Aladeokin",
+      "email": "zaladeokin@gmail.com"
+    },
+    "read_count": 26,
+    "reading_time": 300,
+    "tags": ["software", "blog", "portfolio"],
+    "timestamp": "2024-06-29T19:08:03.776Z"
+  }
+}
 ```
 
 ### Get an Author Blogs
@@ -280,11 +291,12 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **Method:** `GET`
 - **Authorization**: Bearer Token
 - **Query Parameters**:
-    - **page**(optional) : The current page, default is 1.
-    - **limit**(optional) : Number of users to return per page, default is 20.
-    - **state**(optional) : Value can either be *draft* or *published*. if **state** is not set, blogs in both draft and published state will be return.
+  - **page**(optional) : The current page, default to 1.
+  - **limit**(optional) : Number of users to return per page, default to 20.
+  - **state**(optional) : Value can either be _draft_ or _published_. if **state** is not set, blogs in both draft and published state will be return.
 - **Description:** Retrieves the list of blogs created by an author whether it is in publish or draft state. Blogs are order by (latest) timestamp, (highest) read_count, (lowest) and reading_time.
 - **Response:**
+
 ```json
     {
         "success": true,
@@ -311,21 +323,48 @@ Once the server is running, you can use a tool like Postman or curl to interact 
     }
 ```
 
+### Get Author Blog by Id
+
+- **URL:** `/api/v1/blogs/myblogs/:id`
+- **Method:** `GET`
+- **Authorization**: Bearer Token
+- **Description:** Retrieves an author's blog by Id. Author can't access blog created by another user.
+  - _Note_: reading_time is recorded in unit of seconds.
+- **Response:**
+
+```json
+{
+  "success": true,
+  "blog": {
+    "_id": "66805b931fc1c063514d1d18",
+    "title": "Building your portfolio.",
+    "description": "web development masterclass",
+    "state": "draft",
+    "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
+    "read_count": 26,
+    "reading_time": 300,
+    "tags": ["software", "blog", "portfolio"],
+    "timestamp": "2024-06-29T19:08:03.776Z"
+  }
+}
+```
 
 ## Error Handling
+
 Errors are returned in the following format:
+
 ```json
-    {
-        "success": false,
-        "message": "Blog does not exist."
-    }
+{
+  "success": false,
+  "message": "Blog does not exist."
+}
 ```
+
 The API set an appropiate status code and returns a JSON for different scenarios. The following properties are set when an error occur:
 
 - **success**: The value is set to **false** when an error occurred, otherwise **true**.
 - **message** contains information about the error.
-    - *Note*: On successful request, additional properties may be added depending on the endpoint been called.
-
+  - _Note_: On successful request, additional properties may be added depending on the endpoint been called.
 
 ## Dependencies
 
@@ -347,7 +386,6 @@ The API set an appropiate status code and returns a JSON for different scenarios
 - [passport-local](https://github.com/jaredhanson/passport-local)
 - [supertest](https://github.com/visionmedia/supertest/packages)
 - [winston](https://github.com/bithavoc/express-winston)
-
 
 ## Contact
 

@@ -228,3 +228,59 @@ describe("Get an author blogs", ()=>{
         });
     });
 });
+
+describe("Get an author blog by Id", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    test("Return blog created by the an author", async ()=>{
+        let req={
+            params: { id: "6693a800c2acbb05a1a63797" },
+            user: {_id: "666f1ff79181431b43edc052" }
+        }
+        BlogModel.findOne.mockImplementationOnce(()=>{
+                let result= blogsData.filter((blog)=> blog._id === req.params.id && blog.author._id === req.user._id);
+                result= result.length === 0 ? undefined : result[0];
+                return result;
+        });
+        await getAuthorBlogsById(req, res, next);
+        let blog= blogsData.filter((blog)=> blog._id === req.params.id && blog.author._id === req.user._id)[0];
+        expect(res.json).toHaveBeenCalledWith({
+            success: true,
+            blog: blog
+        });
+    });
+    test("Never return blog created by the another author", async ()=>{
+        let req={
+            params: { id: "6693a800c2acbb05a1a63797" },
+            user: {_id: "666f20975a0749eb704efce4" }
+        }
+        BlogModel.findOne.mockImplementationOnce(()=>{
+                let result= blogsData.filter((blog)=> blog._id === req.params.id && blog.author._id === req.user._id);
+                result= result.length === 0 ? undefined : result[0];
+                return result;
+        });
+        await getAuthorBlogsById(req, res, next);
+        let blog= blogsData.filter((blog)=> blog._id === req.params.id && blog.author._id === req.user._id)[0];
+        expect(res.status).toHaveBeenCalledWith(400)
+        expect(res.json).toHaveBeenLastCalledWith({
+            success: false,
+            message: "Blog does not exist."
+        });
+    });
+    test("Error handling", async ()=>{
+        BlogModel.findOne.mockImplementationOnce(()=> {
+             throw "An error occurred"
+        });
+        let req={
+            params: { id: "" },
+            user: {_id: "" }
+        }
+        await getAuthorBlogsById(req, res, next);
+        expect(next).toHaveBeenCalledWith({
+            status: 400,
+            success: false,
+            message: "An error occurred"
+        });
+    });
+});

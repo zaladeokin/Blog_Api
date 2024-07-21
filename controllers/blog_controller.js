@@ -103,10 +103,11 @@ async function getAuthorBlogsById(req, res, next) {
     const filter= { _id: blogId, author: uid }
 
    try{//Model might throw error
-        const blog= await BlogModel.findOne(filter, '-__v');
+        const blog= await BlogModel.findOne(filter, '-__v -author');
 
         if(!blog){
-            return res.status(400).json({
+            res.status(400)
+            return res.json({
                 success: false,
                 message: "Blog does not exist."
             });
