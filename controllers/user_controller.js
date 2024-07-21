@@ -46,7 +46,8 @@ async function getUserById(req, res, next) {
         const user= await UserModel.findById(userId, '_id first_name last_name email');
 
         if(!user){
-            return res.status(400).json({
+            res.status(400);
+            return res.json({
                 success: false,
                 message: "Invalid user Id"
             });

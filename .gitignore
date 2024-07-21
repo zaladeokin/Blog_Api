@@ -2,3 +2,4 @@ guide.md
 node_modules
 .env
 logs
+coverage

@@ -28,9 +28,9 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
 - **Blog state**: Blogs can be in two states(draft and published) and filterable by it.
 - **Search**: Blogs are searchable by author, title and tags. Users are searchable by name.
 - **Validation and error handling**: Middleware for request validation and proper error handling.
-- **Security**: HTTP is secure against Cross-Site Scripting (XSS), brute force and other malicious attacks.
-- **Logging**: Request to endpoints, error and information are logged and store in a log file.
-- **Additional features**: The number of time a blog is read is recorded. Also, there's an algorithm that estimate the expected read time for a blog.
+- **Security**: HTTP is secure against Cross-Site Scripting (XSS), brute force, and other malicious attacks.
+- **Logging**: Request to endpoints, error, and information are logged and store in a log file.
+- **Additional features**: The number of times a blog is read are recorded. Also, there's an algorithm that estimate the expected read time for a blog.
 
 
 ## Technologies Used
@@ -69,6 +69,11 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
 5. Start the server:
 ```sh
     node app.js
+```
+
+6. Test:
+```sh
+    npm test
 ```
 
 
@@ -128,7 +133,7 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 - **URL:** `/api/v1/users/:id`
 - **Method:** `PUT`
 - **Authorization**: Bearer Token
-- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter. Note, Password cann be updated via this endpoint but must be provided for additional authentication (2FA).
+- **Description:** Updates an existing user data(email, firstname, and lastname). The user Id must be pass as parameter. Note, Password can not be updated via this endpoint but must be provided for additional authentication (2FA).
 - **Request Body:**
 ```json
     {
@@ -150,11 +155,11 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 
 - **URL:** `/api/v1/users`
 - **Method:** `GET`
-- **Query**:
+- **Query Parameters**:
     - **page**(optional) : The current page, default is 1.
-    - **lmit**(optional) : Number of users to return per page, default is 20.
+    - **limit**(optional) : Number of users to return per page, default is 20.
     - **keyword**(optional) :  string to filter list of users.
-- **Description:** Retrieves a list of all users.
+- **Description:** Retrieves the list of all users.
 - **Response:**
 ```json
     {
@@ -215,6 +220,7 @@ The API set an appropiate status code and returns a JSON for different scenarios
 - [express](https://expressjs.com/)
 - [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit)
 - [helmet](https://github.com/helmetjs/helmet)
+- [jest](https://github.com/jestjs/jest)
 - [joi](https://github.com/howardmann/validation)
 - [jsonwebtoken](https://github.com/evanshortiss/express-joi-validation)
 - [mongoose](https://github.com/madhums/node-express-mongoose-demo)
@@ -224,6 +230,7 @@ The API set an appropiate status code and returns a JSON for different scenarios
 - [passport](https://github.com/jaredhanson/passport)
 - [passport-jwt](https://github.com/mikenicholson/passport-jwt)
 - [passport-local](https://github.com/jaredhanson/passport-local)
+- [supertest](https://github.com/visionmedia/supertest/packages)
 - [winston](https://github.com/bithavoc/express-winston)
 
 
