@@ -12,12 +12,19 @@
   - [Update User data](#update-user-data)
   - [Get All Users](#get-all-users)
   - [Get a User](#get-a-user)
+  - [Create a Blog](#create-a-blog)
+  - [Publish a Blog](#publish-a-blog)
+  - [Edit a Blog](#edit-a-blog)
   - [Get All Published Blogs](#get-all-published-blogs)
   - [Get Published Blog by Id](#get-published-blog-by-id)
   - [Get an Author Blogs](#get-an-author-blogs)
-  - [Get Author Blog by Id](#get-uthor-blog-by-id)
+  - [Get Author Blog by Id](#get-author-blog-by-id)
+  - [Search Published Blogs](#search-published-blogs)
+  - [Search an Author Blogs](#search-an-author-blogs)
+  - [Delete a Blog by Id](#delete-a-blog-by-id)
 - [Error Handling](#error-handling)
 - [Dependencies](#dependencies)
+- [Upcoming Features](#upcoming-features)
 - [Contact](#contact)
 
 ## Introduction
@@ -33,6 +40,7 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
 - **Search**: Blogs are searchable by author, title and tags. Users are searchable by name.
 - **Validation and error handling**: Middleware for request validation and proper error handling.
 - **Security**: HTTP is secure against Cross-Site Scripting (XSS), brute force, and other malicious attacks.
+- **Rate limiting**: Requests are limited to 100 within 10 minutes per IP address
 - **Logging**: Request to endpoints, error, and information are logged and store in a log file.
 - **Additional features**: The number of times a blog is read are recorded. Also, there's an algorithm that estimate the expected read time for a blog.
 
@@ -213,6 +221,87 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 }
 ```
 
+### Create a Blog
+
+- **URL:** `/api/v1/blogs`
+- **Method:** `POST`
+- **Authorization**: Bearer Token
+- **Description:** This endpoint create a new blog and automatically estimate _read_time_ (an average time(unit of seconds) to finish reading the blog). Newly created blog will be in a draft state and _read_count_ is set to zero
+- **Request Body:**
+
+```json
+{
+  "title": "Building your portfolio (part 1).",
+  "description": "web development masterclass",
+  "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
+  "tags": ["software", "blog", "portfolio"]
+}
+```
+
+- **Response:**
+
+```json
+{
+  "success": true,
+  "message": "Blog created successfully",
+  "blog": {
+    "title": "Building your portfolio (part 1).",
+    "description": "web development masterclass",
+    "author": "666f20975a0749eb704efce4",
+    "state": "draft",
+    "read_count": 0,
+    "reading_time": 10.5,
+    "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
+    "tags": ["software", "blog", "portfolio"],
+    "timestamp": "2024-07-13T13:01:38.306Z",
+    "_id": "6693a800c2acbb05a1a63797",
+    "__v": 0
+  }
+}
+```
+
+### Publish a Blog
+
+- **URL:** `/api/v1/blogs/publish/:id`
+- **Method:** `PUT`
+- **Authorization**: Bearer Token
+- **Description:** This endpoint allows author to change the state of their blog from draft to published. Only published blogs are available to other users, and author are only allowed to publish blogs created by them.
+- **Response:**
+
+```json
+{
+  "success": true,
+  "message": "Blog published successfully"
+}
+```
+
+### Edit a blog
+
+- **URL:** `/api/v1/blogs/:id`
+- **Method:** `PUT`
+- **Authorization**: Bearer Token
+- **Description:** This endpoint allow author to modify blogs properties created by them. Author is not allowed to modify _timestamp_, _author_, _reading_time_ and _read_count_ properties. However, _read_time_ is recalculated and updated.
+- **Request Body:**
+
+```json
+{
+  "title": "Building your portfolio.",
+  "description": "web development masterclass",
+  "state": "published",
+  "body": "Building a portfolio is essential for showcasing your skills and accomplishments, whether you're a creative professional, a developer, or someone in a different field. Here’s a quick guide to help you get started\n1. Identify Your Audience Understanding who will be viewing your portfolio is crucial. Tailor your content to meet their expectations and highlight the skills they value the most.\n2. Select Your Best Work Quality over quantity. Choose projects that demonstrate your expertise and versatility. Include a variety of work to show the range of your abilities.\n3. Showcase the Process Clients and employers love to see how you think Include sketches, drafts, and explanations of your process. This gives insight into your problem-solving skills and creativity.",
+  "tags": ["software", "blog", "portfolio"]
+}
+```
+
+- **Response:**
+
+```json
+{
+  "success": true,
+  "message": "Blog edited successfully"
+}
+```
+
 ### Get All Published Blogs
 
 - **URL:** `/api/v1/blogs`
@@ -349,6 +438,130 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 }
 ```
 
+### Search Published Blogs
+
+- **URL:** `/api/v1/blogs/search/:param`
+- **Method:** `GET`
+- **:param**: The parameter to search by (value can either be _author_, _title_, or _tags_).
+- **Query Parameters**:
+  - **keyword**: The search query string.
+  - **page**(optional) : The current page, default to 1.
+  - **limit**(optional) : Number of users to return per page, default to 20.
+- **Description:** This endpoint allows users to search through plublished blogs using three parameter (author, title, tags). Result are ordered by (highest) read_count, (lowest) reading_time and (latest) timestamp.
+- **example**:
+
+```http
+GET /api/v1/blogs/search/author?keyword=grace&limit=25&page=2
+```
+
+```http
+GET /api/v1/blogs/search/title?keyword=development&limit=25&page=2
+```
+
+```http
+GET /api/v1/blogs/search/tags?keyword=motivation&limit=25&page=2
+```
+
+- **Response:**
+
+```json
+    {
+        "success": true,
+        "blogs": [
+            {
+                "_id": "6693a800c2acbb05a1a63797",
+                "title": "Grace at UK.",
+                "description": "My trip to UK.",
+                "author": {
+                    "_id": "666f1ff79181431b43edc052",
+                    "first_name": "Grace",
+                    "last_name": "Favor"
+                },
+                "read_count": 4,
+                "reading_time": 10.5,
+                "tags": [
+                    "Test",
+                    "blog",
+                    "UK"
+                ],
+                "timestamp": "2024-07-14T10:27:12.286Z"
+            },
+            ...
+        ],
+        "limit": 25,
+        "current_page": 2,
+        "total_pages": 2
+    }
+```
+
+### Search an Author Blogs
+
+- **URL:** `/api/v1/blogs/myblogs/search/:param`
+- **Method:** `GET`
+- **Authorization**: Bearer Token
+- **:param**: The parameter to search by (value can either _title_ or _tags_).
+- **Query Parameters**:
+  - **keyword**: The search query string.
+  - **page**(optional) : The current page, default to 1.
+  - **limit**(optional) : Number of users to return per page, default to 20.
+- **Description**: This endpoint allows author to search through blogs created by them using using two parameter (title, tags). Result are ordered by (highest) read_count, (lowest) reading_time and (latest) timestamp.
+- **example**:
+
+```http
+GET /api/v1/blogs/myblogs/search/title?keyword=grace&limit=5&page=1
+```
+
+```http
+GET /api/v1/blogs/myblogs/search/tags?keyword=UK&limit=5&page=1
+```
+
+- **Response:**
+
+```json
+    {
+        "success": true,
+        "blogs": [
+            {
+                "_id": "6693a800c2acbb05a1a63797",
+                "title": "Grace at UK.",
+                "description": "My trip to UK.",
+                "author": {
+                    "_id": "666f1ff79181431b43edc052",
+                    "first_name": "Grace",
+                    "last_name": "Favor"
+                },
+                "read_count": 4,
+                "reading_time": 10.5,
+                "tags": [
+                    "Test",
+                    "blog",
+                    "UK"
+                ],
+                "timestamp": "2024-07-14T10:27:12.286Z"
+            },
+            ...
+        ],
+        "limit": 5,
+        "current_page": 1,
+        "total_pages": 2
+    }
+```
+
+### Delete a Blog by Id
+
+- **URL:** `/api/v1/blogs/:id`
+- **Method:** `DELETE`
+- **Authorization**: Bearer Token
+- **Description:**: This endpoint allows Author to delete blog created by them.
+- **Response:**
+
+```json
+{
+  "success": true,
+  "message": "Blog deleted successfully"
+}
+```
+
 ## Error Handling
 
 Errors are returned in the following format:
@@ -360,7 +573,7 @@ Errors are returned in the following format:
 }
 ```
 
-The API set an appropiate status code and returns a JSON for different scenarios. The following properties are set when an error occur:
+Endpoints set an appropiate status code and returns a JSON for different scenarios. The following properties are set when an error occur:
 
 - **success**: The value is set to **false** when an error occurred, otherwise **true**.
 - **message** contains information about the error.
@@ -386,6 +599,12 @@ The API set an appropiate status code and returns a JSON for different scenarios
 - [passport-local](https://github.com/jaredhanson/passport-local)
 - [supertest](https://github.com/visionmedia/supertest/packages)
 - [winston](https://github.com/bithavoc/express-winston)
+
+## Upcoming Features
+
+- Reset password
+- Change password
+- Multimedia
 
 ## Contact
 

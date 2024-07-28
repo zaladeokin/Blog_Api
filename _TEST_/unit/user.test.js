@@ -206,16 +206,6 @@ describe("Update user Info", ()=>{
             message: "Action forbidden"
         });
     });
-    // test("Authenticate with password", async ()=>{
-    //     let req={
-    //         params: { id: "666f20975a0749eb704efce4" },
-    //         user: { _id: "666f20975a0749eb704efce4" },
-    //         body:{ password: "qwert1" }
-    //     }
-    //     await updateUser(req, res, next);
-    //     expect(res.status).toHaveBeenCalledWith(401);
-    // })
-    // test("successfully  update user data")
     test("Error handling", async ()=>{
         UserModel.findById.mockImplementationOnce(()=> {
              throw "An error occurred"

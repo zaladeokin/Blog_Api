@@ -316,7 +316,7 @@ async function editBlog(req, res, next) {
     /**
      * When Blog is edited, State can be changed alongside with other parameter by the author
      * author, timestamp, reading_time and read_count can not be changed
-     * Therefore, No need to validate the above properties(author, timestamp, reading_time and read_count) in blog_validator.js. However, Same validator is used to create and dit blog
+     * Therefore, No need to validate the above properties(author, timestamp, reading_time and read_count) in blog_validator.js. However, Same validator is used to create and edit blog
      * read_time will be calculated again based on the number of words in blog.body
      */
 
@@ -424,7 +424,8 @@ async function validateBlogIdAndUser(blogId, userId, res, next) {
         let author= await BlogModel.findById(blogId, 'author');
 
         if(!author){
-            res.status(400).json({
+            res.status(400);
+            res.json({
                 success: false,
                  message: "Blog does not exit"
             });

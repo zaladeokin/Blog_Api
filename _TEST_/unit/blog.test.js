@@ -284,3 +284,146 @@ describe("Get an author blog by Id", ()=>{
         });
     });
 });
+
+describe("Search published blog", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    test("Search parameters can only be author, title and tags", async ()=>{
+        let req={
+            params:{ param: "any_other_parameter"},
+            query: {}
+        }
+        await searchPublishedBlogs(req, res, next);
+        expect(next).toHaveBeenCalledWith({
+            status: 400,
+            success: false,
+            message: "Invalid  search parameter"
+        });
+    });
+});
+
+describe("Search Blogs created by an author.", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    test("No author search parameters, only title and tags", async ()=>{
+        let req={
+            params:{ param: "author"},
+            query: {},
+            user: {}
+        }
+        await searchAuthorBlogs(req, res, next);
+        expect(next).toHaveBeenCalledWith({
+            status: 400,
+            success: false,
+            message: "Invalid  search parameter"
+        });
+    });
+});
+
+describe("Create a blog", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    test("Title must be unique.", async ()=>{
+        req={
+            user: {},
+            body: {title: "Building your portfolio."}
+        }
+        BlogModel.countDocuments.mockImplementationOnce(()=> blogsData.filter((blog)=> blog.title === req.body.title).length);
+        await addBlog(req, res, next);
+        expect(next).toHaveBeenCalledWith({
+                status: 409,
+                success: false,
+                message: "Title has been used for a Blog."
+        });
+    });
+});
+
+describe("Edit a blog", ()=>{
+    beforeEach(()=>{
+        jest.clearAllMocks();
+    });
+    test("Check if ID is correct", async()=>{
+        let req={
+            params: {id: "wrong_id"},
+            user: {},
+            body:{}
+        }
+        BlogModel.findById.mockImplementation(()=>{
+            let result= blogsData.filter((blog)=> blog.author._id === req.params.id);
+            result= result.length === 0 ? undefined : result[0];
+            return result;
+        });
+        await editBlog(req, res, next);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Blog does not exit"
+        });
+    });
+    test("Ensure author can only edit their own blog", async ()=>{
+        let req={
+            params: {id: "666f1ff79181431b43edc052"},
+            user: {_id: "666f20975a0749eb704efce4"},
+            body:{}
+        }
+        BlogModel.findById.mockImplementation(()=>{
+            let result= blogsData.filter((blog)=> blog.author._id === req.params.id);
+            result= result.length === 0 ? undefined : result[0];
+            return result;
+        });
+        await editBlog(req, res, next);
+        expect(res.status).toHaveBeenLastCalledWith(403);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Action forbidden"
+        })
+    });
+});
+
+describe("Publish a blog.", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    test("Ensure author can only publish their own blog", async ()=>{
+        let req={
+            params: {id: "666f1ff79181431b43edc052"},
+            user: {_id: "666f20975a0749eb704efce4"}
+        }
+        BlogModel.findById.mockImplementation(()=>{
+            let result= blogsData.filter((blog)=> blog.author._id === req.params.id);
+            result= result.length === 0 ? undefined : result[0];
+            return result;
+        });
+        await publishBlog(req, res, next);
+        expect(res.status).toHaveBeenLastCalledWith(403);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Action forbidden"
+        })
+    });
+});
+
+describe("Delete a blog", ()=>{
+    beforeAll(()=>{
+        jest.clearAllMocks();
+    });
+    test("Ensure author can only delete their own blog", async ()=>{
+        let req={
+            params: {id: "6693a800c2acbb05a1a63797"},
+            user: {_id: "666f20975a0749eb704efce4"}
+        }
+        BlogModel.countDocuments.mockImplementation(()=>{
+            let result= blogsData.filter((blog)=> blog.author._id === req.user._id && blog.id === req.params.id);
+            return result.length;
+        });
+        await deleteBlogById(req, res, next);
+        expect(res.status).toHaveBeenLastCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: "Blog does not exist or belong to you"
+            });
+    });
+});
