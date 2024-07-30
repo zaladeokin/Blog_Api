@@ -83,6 +83,12 @@ app.use((err, req, res, next) => {
 });
 
 //Start server
-app.listen(CONFIG.PORT, ()=>{
-    logger.info(`Server started successfully on port ${CONFIG.PORT}`);
-}); 
+if (process.env.NODE_ENV !== 'test'){
+    //Supertest doesn't need app.listen
+    app.listen(CONFIG.PORT, ()=>{
+        logger.info(`Server started successfully on port ${CONFIG.PORT}`);
+    }); 
+}
+
+//Export to enable testing of API with supertest
+module.exports = app;

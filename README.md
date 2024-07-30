@@ -49,6 +49,8 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
 - MongoDB (atlas)
 - Express.js
 - Node.js
+- Jest
+- Supertest
 
 ## Installation
 
@@ -85,7 +87,7 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
     node app.js
 ```
 
-6. Test:
+6. Test (Development only):
 
 ```sh
     npm test
