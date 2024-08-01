@@ -6,6 +6,7 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Endpoints](#endpoints)
   - [Login User](#login-user)
   - [Signup a new User](#signup-a-new-user)
@@ -96,6 +97,10 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
 ## Usage
 
 Once the server is running, you can use a tool like Postman or curl to interact with the API endpoints.
+
+## Entity Relationship Diagram
+
+![Entity Relationship Diagram (ERD)](ERDpng)
 
 ## Endpoints
 
