@@ -100,7 +100,7 @@ Once the server is running, you can use a tool like Postman or curl to interact 
 
 ## Entity Relationship Diagram
 
-![Entity Relationship Diagram (ERD)](ERDpng)
+![Entity Relationship Diagram (ERD)](ERD.png)
 
 ## Endpoints
 
