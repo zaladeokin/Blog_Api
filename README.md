@@ -88,7 +88,7 @@ The Blog API is a RESTful service built with Express.js, designed to manage blog
     node app.js
 ```
 
-6. Test (Development only): *Note* - Endpoints that create or delete resources are skipped to avoid over population or loss of data during test. If you're interested in testing this endpoints, kindly alter **blog.test.js** file in _TEST_/integration folder for jest to run these endpoints.
+6. Test (Development only): *Note* - Endpoints that create or delete resources are skipped to avoid over population or loss of data during test. If you're interested in testing this endpoints, kindly alter **blog.test.js** file in **\_TEST\_/integration** folder for jest to run these endpoints.
 
 ```sh
     npm test
